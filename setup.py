@@ -20,5 +20,6 @@ setup(
     packages=find_packages(),
     download_url="https://github.com/lamurga/crehana-redisbeat",
     description="Python library for crehana",
-    install_requires=install_requires
+    install_requires=install_requires,
+    include_package_data=True,
 )
