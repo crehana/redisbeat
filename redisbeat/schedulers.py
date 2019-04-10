@@ -135,7 +135,7 @@ logger = get_logger(__name__)
 
 
 class RedBeatConfig(object):
-    def __init__(self, app=None):
+    def __init__(self, app='celery_app'):
         self.app = app_or_default(app)
         self.key_prefix = self.either_or('redbeat_key_prefix', 'redbeat:')
         self.schedule_key = self.key_prefix + ':schedule'
