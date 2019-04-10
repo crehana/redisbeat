@@ -135,7 +135,7 @@ logger = get_logger(__name__)
 
 
 class RedBeatConfig(object):
-    def __init__(self, app=None):
+    def __init__(self, app='celery_app'):
         if app == 'celery_app':
             celery_app = importlib.import_module('celery_app')
             app = getattr(celery_app, 'app', None)
