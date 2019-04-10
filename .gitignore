@@ -1,0 +1,10 @@
+#Ignore .pyc
+*.pyc
+
+#Ignore build
+build/*
+
+#Ignore idea
+.idea/*
+
+redisbeat/__pycache__/
