@@ -12,7 +12,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
-
+import importlib
 from celery import VERSION as CELERY_VERSION
 from celery.beat import Scheduler, ScheduleEntry, DEFAULT_MAX_INTERVAL
 from celery.utils.log import get_logger
@@ -135,7 +135,10 @@ logger = get_logger(__name__)
 
 
 class RedBeatConfig(object):
-    def __init__(self, app='celery_app'):
+    def __init__(self, app=None):
+        if app == 'celery_app':
+            celery_app = importlib.import_module('celery_app')
+            app = getattr(celery_app, 'app', None)
         self.app = app_or_default(app)
         self.key_prefix = self.either_or('redbeat_key_prefix', 'redbeat:')
         self.schedule_key = self.key_prefix + ':schedule'
