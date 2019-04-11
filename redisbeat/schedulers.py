@@ -12,7 +12,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
-import importlib
+
 from celery import VERSION as CELERY_VERSION
 from celery.beat import Scheduler, ScheduleEntry, DEFAULT_MAX_INTERVAL
 from celery.utils.log import get_logger
@@ -101,16 +101,7 @@ def get_redis(app=None):
             'REDBEAT_REDIS_OPTIONS',
             conf.app.conf.get('BROKER_TRANSPORT_OPTIONS', {}))
         retry_period = redis_options.get('retry_period')
-        if conf.redis_url.startswith('redis-sentinel') and  'sentinels' in redis_options:
-            from redis.sentinel import Sentinel
-            sentinel = Sentinel(redis_options['sentinels'],
-                                socket_timeout=redis_options.get('socket_timeout'),
-                                password=redis_options.get('password'),
-                                decode_responses=True)
-            connection = sentinel.master_for(redis_options.get('service_name', 'master'))
-        else:
-            connection = StrictRedis.from_url(conf.redis_url, decode_responses=True)
-
+        connection = StrictRedis.from_url(conf.redis_url, decode_responses=True)
         if retry_period is None:
             app.redbeat_redis = connection
         else:
@@ -135,10 +126,7 @@ logger = get_logger(__name__)
 
 
 class RedBeatConfig(object):
-    def __init__(self, app='celery_app'):
-        if app == 'celery_app':
-            celery_app = importlib.import_module('celery_app.celery')
-            app = getattr(celery_app, 'app', None)
+    def __init__(self, app=None):
         self.app = app_or_default(app)
         self.key_prefix = self.either_or('redbeat_key_prefix', 'redbeat:')
         self.schedule_key = self.key_prefix + ':schedule'
